@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/order */
 /* eslint-disable no-console */
 import express from 'express';
 import labRoutes from './server/labRoutes.js';
@@ -42,7 +44,7 @@ async function bootServer() {
       // const mysql = await db.sequelizeDB;
       // await mysql.sync();
       console.log(`Listening on: http//localhost:${PORT}`);
-      console.log(`environment:`, process.env.CONTEXT);
+      console.log('environment:', process.env.CONTEXT);
     });
   } catch (err) {
     console.error(err);
