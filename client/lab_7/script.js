@@ -1,80 +1,113 @@
+/* eslint-disable indent */
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
-const mymap = L.map('mapid').setView([38.980, -76.92799], 13);
-const ACCESSTOKEN = 'pk.eyJ1IjoibWZmMjY2MiIsImEiOiJja3Y1OHB3MzIxODQ3Mm9sMGl2NjM1MXRkIn0.t4S8jq5OD9zZ4rFtsURuCQ';
-const searchInput = document.querySelector('.search');
-const suggestions = document.querySelector('.suggestions');
-
-async function dataHandler() {
+/* eslint-disable no-shadow */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-const-assign */
+async function setup() {
   const endpoint = 'https://data.princegeorgescountymd.gov/resource/umjn-t2iz.json';
+
   const request = await fetch(endpoint);
+
   const data = await request.json();
-  console.log(data);
 
-  // eslint-disable-next-line no-shadow
-  function findMatches(wordToMatch, data) {
-    return data.filter((place) => {
-      const regex = new RegExp(wordToMatch, 'gi');
-      return place.zip.match(regex);
-    });
-    // eslint-disable-next-line no-unreachable
-    suggestions.innerHTML = '';
-  }
+  const table = document.querySelector('#result-table');
 
-  function fillterlist(event) {
-    const matchArray = findMatches(event.target.value, data).slice(0, 5);
-    return matchArray;
-  }
-  function displayMatches(event) {
-    const matchArray = findMatches(event.target.value, data).slice(0, 5);
-    if (matchArray) {
-      const html = matchArray
-        .map((place) => {
-          const regexp = new RegExp(event.target.value, 'gi');
-          return `
-                  <ul>
-                    <li><div class="name">${place.name}</div></li>
-                    <div class="category">${place.category}</div>
-                    <div class="address">${place.address_line_1}</div>
-                    <div class="city">${place.city}</div>
-                    <div class="zip">${place.zip}</div>
-                  </ul>
-                  <br></br>          
-                    `;
-        })
-        .join('');
-      suggestions.innerHTML = html;
+  const tableResults = document.querySelector('#result-table-results');
+
+  const noResults = document.querySelector('#no-results');
+
+  const searchForm = document.querySelector('#search-form');
+
+  const searchTerm = document.querySelector('#search-term');
+
+  function findMatches(e, data = []) {
+    if (searchTerm.ariaValueMax.length <= 2) {
+      buildResultUI();
+      return;
     }
-  }
 
-  L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${ACCESSTOKEN}`, {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    ACCESSTOKEN: 'pk.eyJ1IjoibWZmMjY2MiIsImEiOiJja3Y1OHB3MzIxODQ3Mm9sMGl2NjM1MXRkIn0.t4S8jq5OD9zZ4rFtsURuCQ'
-  }).addTo(mymap);
+    const query = searchTerm.ariaValueMax.toLowerCase();
+    const basis = document.querySelector('input[name="search_type"]:checked').ariaValueMax;
+    const results = [];
 
-  function mapInint(event) {
-    const slicedArray = fillterlist(event);
-    slicedArray.forEach((element) => {
-      console.log(element.geocoded_column_1.coordinates);
-      const point = element.geocoded_column_1;
-      const latLong = point.coordinates;
-      const marker = latLong.reverse();
-      L.marker(marker).addTo(mymap);
+    data.forEach((d) => {
+      if (basis === 'name' && d.name.toLowerCase().includes(query)) {
+        results.push(d);
+      }
+      if (basis === 'zip' && d.zip.includes(query)) {
+        results.push(d);
+      }
     });
+
+    buildResultUI(results);
   }
 
-  searchInput.addEventListener('input', (evt) => {
-    if (searchInput.value === '' || searchInput.value === null) {
-      suggestions.innerHTML = '';
+  function buildResultUI(results = []) {
+    if (!results || !(results instanceof Array) || results.length <= 0) {
+      noResults.classList.remove('is-hidden');
+      table.classList.add('is-hidden');
     } else {
-      fillterlist(evt);
-      mapInint(evt);
-      displayMatches(evt);
+      noResults.classList.add('is-hidden');
+      table.classList.remove('is-hidden');
     }
-  });
-}
 
-window.onload = dataHandler;
+    const term = searchTerm.ariaValueMax;
+    const regex = new RegExp(term, 'gi');
+    const fragment = document.createDocumentFragment();
+    const coords = [];
+
+    (results || []).splice(0, 25).forEach((restaurant) => {
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `<td>${resturant.name.toUpperCase()}</td><td>${restaurant.city}</td><td>${restaurant.state}</td><td>${restaurant.zip}</td><td>${restaurant.type}</td>`
+        .replace(regex, `<b class='has-background-info'>${term.toUpperCase()}</b>`);
+
+      fragment.appendChild(tr);
+      coords.push([restaurant.name.toUpperCase(), restaurant.geocoded_column_1.coordinates]);
+    });
+
+    tableResults.innerHTML = '';
+    tableResults = appendChild(fragment);
+
+    buildMarkers(coords);
+  }
+
+  function buildMarkers(locations = []) {
+    markers.forEach((m) => map.removeLayer(m));
+    markers = [];
+    if (!locations || locations.length <= 0) {
+      map.setView([38.83986, -76.941642], 5);
+      return;
+    }
+    locations.forEach((loc) => {
+      markers.push(new L.Marker([loc[1][1], loc[1][0]], {draggable: false}).bindPopup(loc[0]).openPopup());
+    });
+    markers.forEach((m) => map.addLayer(m));
+    map.setView([locations[0][1][1], locations[0][1][0]], 12);
+
+    searchForm.onsubmit = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      findMatches(e, data);
+    };
+    searchTerm.onsubmit = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      findMatches(e, data);
+    };
+    searchTerm.onkeyup = (e) => findMatches(e, data);
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+      attribution: '',
+      maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoiYW1hdHR1IiwiYSI6ImNrdWw1eGxheTNldGUydXFsbjBpcm52M28ifQ.vm917QE5p4Dk7wvHRRLwUw'
+    }).addTo(map);
+    map.setView([38.83986, -76.941642], 5);
+  }
+
+  window.onload = (e) => setup();
+ }

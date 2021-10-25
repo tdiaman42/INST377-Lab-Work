@@ -1,35 +1,37 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    min-height: 100%;
-    font-family: ‘Segoe UI’, Candara, ‘Bitstream Vera Sans’, ‘DejaVu Sans’,
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: ‘Segoe UI’, Candara, ‘Bitstream Vera Sans’, ‘DejaVu Sans’,
       ‘Bitsream Vera Sans’, ‘Trebuchet MS’, Verdana, ‘Verdana Ref’, sans-serif;
-    background-color: white;
-  }
+  background-color: #3b3b3b;
+}
 
-  .columns {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  .wrapper {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .container {
-    max-width: 950px;
-    margin-top: 25px;
-  }
+/* Page Layout */
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+}
 
-  .box {
-    background-color: black;
-    margin-top: 20px;
-  }
+.wrapper {
+  display: flex;
+}
 
-  #mapid { height: 400px; }
+.container {
+  max-width: 960px;
+  margin-top: 25px;
+}
+
+#result-map {
+  height: 450px;
+}
