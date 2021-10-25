@@ -1,79 +1,38 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
-    <title>Teddy Diamantopoulos: Lab 7 - Map Markers</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body class="p-3">
-    <div class="notification is-warning">
-      Teddy Diamantopoulos: Lab 7 - Map Markers
-    </div>
-    <div class="columns is-centered is-desktop">
-      <div class="column is-4">
-        <form class="box" method="" action="" id="search-form">
-          <div class="field">
-            <label class="label">Search Term</label>
-            <div class="control">
-              <input name="search_term" class="input" type="text" id="search-term">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michael Knapp- Lab 7</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma-rtl.min.css'>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="columns">
+                <div class="column">
+                    <h1> Michael Knapp- Lab 7</h1>
+                    <form class="search">
+                        <label class="label">Search Bar </label>
+                        <input type="text" placeholder="PG County Zip" />
+                
+                        <ul class="suggestions"></ul>
+                    </form>
+                </div>
+                <div class="column">
+                    <div id="mapid"></div>
+                </div>
             </div>
-          </div>
-
-          <div class="field">
-            <label class="label">Search By</label>
-            <div class="control">
-              <label class="radio">
-                <input type="radio" name="search_type" value="zip" checked>
-                Zip Code
-              </label>
-              <label class="radio">
-                <input type="radio" name="search_type" value="name" disabled>
-                Resturant Name
-              </label>
-            </div>
-          </div>
-
-          <button class="button is-primary">Submit</button>
-        </form>
-        <div class="card">
-          <div class="card-content">
-            <h3 class="title is-4">Search Results</h3>
-
-            <!-- No result element -->
-            <div class="notification is-warning my-0" id="no-results">
-              Find resturants by entering your search query to the left.
-            </div>
-
-            <!-- Result Element -->
-            <div class="table-container">
-              <table class="table is-hidden is-fullwidth is-size-7" id="result-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Address</th>
-                      <th>City, State</th>
-                    </tr>
-                  </thead>
-                  <tbody id="result-table-results"></tbody>
-              </table>
-            </div>
-          </div>
         </div>
-      </div>
-      <div class="column is-8">
-        <div class="card">
-          <div class="card-content">
-            <h3 class="title is-3">Resturant Map</h3>
-
-            <div id="result-map"></div>
-          </div>
-        </div>
-      </div>
     </div>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="script.js"></script>
-  </body>
+</body>
 </html>

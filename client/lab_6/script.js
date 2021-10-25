@@ -1,78 +1,55 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-const-assign */
-async function setup() {
-  const endpoint = 'https://data.princegeorgescountymd.gov/resource/umjn-t2iz.json';
+async function windowActions() {
+  const endPoint = 'https://data.princegeorgescountymd.gov/resource/umjn-t2iz.json';
 
-  const request = await fetch(endpoint);
+  const request = await fetch(endPoint);
+  const arrayName = await request.json();
 
-  const data = await request.json();
+  const cities = [];
 
-  const table = document.querySelector('#result-table');
+  fetch(endPoint)
+    .then((blob) => blob.json())
+    .then((data) => cities.push(...data));
 
-  const tableResults = document.querySelector('#result-table-results');
-
-  const noResults = document.querySelector('#no-results');
-
-  const searchForm = document.querySelector('#search-form');
-
-  const searchTerm = document.querySelector('#search-term');
-
-  function findMatches(e, data = []) {
-    if (searchTerm.ariaValueMax.length <= 2) {
-      buildResultUI();
-      return;
-    }
-
-    const query = searchTerm.ariaValueMax.toLowerCase();
-    const basis = document.querySelector('input[name="search_type"]:checked').ariaValueMax;
-    const results = [];
-
-    data.forEach((d) => {
-      if (basis === 'name' && d.name.toLowerCase().includes(query)) {
-        results.push(d);
-      }
-      if (basis === 'zip' && d.zip.includes(query)) {
-        results.push(d);
-      }
+  // eslint-disable-next-line no-shadow
+  function findMatches(wordToMatch, cities) {
+    return cities.filter((place) => {
+      const regex = new RegExp(wordToMatch, 'gi');
+      return (
+        place.name.match(regex)
+          || place.zip.match(regex)
+          || place.category.match(regex)
+      );
     });
-
-    buildResultUI(results);
   }
+  function displayMatches(event) {
+    const matchArray = findMatches(event.target.value, cities);
+    const html = matchArray
+      .map((place) => `
+        <li>
+        <div class="name">${place.name}</div>
+        <div class="category">${place.category}</div>
+        <div class="address">${place.address_line_1}</div>
+        <div class="city">${place.city}</div>
+        <div class="zip">${place.zip}</div>
+        </li>
+        <br>
+            `)
+      .join('');
+    // eslint-disable-next-line no-use-before-define
+    suggestions.innerHTML = html;
+  }
+  const searchInput = document.querySelector('.search');
 
-  function buildResultUI(results = []) {
-    if (!results || !(results instanceof Array) || results.length <= 0) {
-      noResults.classList.remove('is-hidden');
-      table.classList.add('is-hidden');
+  const suggestions = document.querySelector('.suggestions');
+
+  searchInput.addEventListener('change', displayMatches);
+  searchInput.addEventListener('keyup', (evt) => {
+    if (!evt.target.value) {
+      document.querySelector('.suggestions').innerHTML = '';
     } else {
-      noResults.classList.add('is-hidden');
-      table.classList.remove('is-hidden');
+      displayMatches(evt);
     }
-
-    const term = searchTerm.ariaValueMax;
-    const regex = new RegExp(term, 'gi');
-    const fragment = document.createDocumentFragment();
-
-    (results || []).splice(0, 25).forEach((restaurant) => {
-      const tr = document.createElement('tr');
-
-      tr.innerHTML = `<td>${resturant.name.toUpperCase()}</td><td>${restaurant.city}</td><td>${restaurant.state}</td><td>${restaurant.zip}</td><td>${restaurant.type}</td>`
-        .replace(regex, `<b class='has-background-info'>${term.toUpperCase()}</b>`);
-
-      fragment.appendChild(tr);
-    });
-
-    tableResults.innerHTML = '';
-    tableResults = appendChild(fragment);
-  }
-
-  searchForm.onsubmit = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    findMatches(e, data);
-  };
-  searchTerm.onkeyup = (e) => findMatches(e, data);
+  });
 }
-
-window.onload = (e) => setup();
+window.onload = windowActions;

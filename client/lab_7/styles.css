@@ -4,20 +4,15 @@
   box-sizing: border-box;
 }
 
-html {
-  height: 100%;
-}
-
 body {
-  height: 100%;
   margin: 0;
   padding: 0;
+  min-height: 100%;
   font-family: ‘Segoe UI’, Candara, ‘Bitstream Vera Sans’, ‘DejaVu Sans’,
-      ‘Bitsream Vera Sans’, ‘Trebuchet MS’, Verdana, ‘Verdana Ref’, sans-serif;
-  background-color: #3b3b3b;
+    ‘Bitsream Vera Sans’, ‘Trebuchet MS’, Verdana, ‘Verdana Ref’, sans-serif;
+  background-color: white;
 }
 
-/* Page Layout */
 .columns {
   display: flex;
   flex-wrap: wrap;
@@ -25,13 +20,16 @@ body {
 
 .wrapper {
   display: flex;
+  flex-wrap: wrap;
 }
-
 .container {
-  max-width: 960px;
+  max-width: 950px;
   margin-top: 25px;
 }
 
-#result-map {
-  height: 450px;
+.box {
+  background-color: black;
+  margin-top: 20px;
 }
+
+#mapid { height: 400px; }

@@ -18,16 +18,16 @@
   }
   
   /* Page Layout */
-  .columns {
+  .search {
     display: flex;
     flex-wrap: wrap;
   }
   
-  .wrapper {
+  .label {
     display: flex;
   }
   
-  .container {
+  .suggestions {
     max-width: 960px;
     margin-top: 25px;
   }
